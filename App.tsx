@@ -1,34 +1,39 @@
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 const gridCount = 2500;
 const gridSize = 50;
 
-export default function App() {
+export function Map() {
 	return (
 		<View style={styles.container}>
-			<View style={styles.mapContainer}>
-				<ReactNativeZoomableView
-					maxZoom={3}
-					minZoom={0.1}
-					zoomStep={0.5}
-					initialZoom={0.1}
-					bindToBorders={false}
-					movementSensibility={5}
-					style={{
-						backgroundColor: 'red',
-					}}
-				>
-					<View style={styles.map}>
-						{[...Array(gridCount)].map((x, i) =>
-							<View key={i} style={styles.grid}>
-								<Text>{i}</Text>
-							</View>
-						)}
-					</View>
-				</ReactNativeZoomableView>
-			</View>
+			{/*<View style={styles.mapContainer}>*/}
+			{/*<ImageBackground source={require('./assets/images/water.png')} style={{width: "100%", height: "100%"}}*/}
+			{/*				 imageStyle={{resizeMode: 'repeat'}}>*/}
+			<ReactNativeZoomableView
+				maxZoom={3}
+				minZoom={0.1}
+				zoomStep={0.5}
+				initialZoom={0.1}
+				bindToBorders={false}
+			>
+				<View style={styles.map}>
+					{[...Array(gridCount)].map((x, i) =>
+						<View key={i} style={styles.grid}>
+							<Image
+								style={styles.gridImage}
+								source={require('./assets/images/water.png')}
+							/>
+							{/*<Text>{i}</Text>*/}
+						</View>
+					)}
+				</View>
+			</ReactNativeZoomableView>
+			{/*</ImageBackground>*/}
+			{/*</View>*/}
 			<StatusBar style="auto"/>
 		</View>
 	);
@@ -37,7 +42,7 @@ export default function App() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: '#edffff',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
@@ -50,7 +55,6 @@ const styles = StyleSheet.create({
 	map: {
 		width: Math.ceil(Math.sqrt(gridCount)) * gridSize,
 		height: Math.ceil(Math.sqrt(gridCount)) * gridSize,
-		backgroundColor: 'green',
 		display: 'flex',
 		flexDirection: 'row',
 		flexWrap: 'wrap',
@@ -59,8 +63,33 @@ const styles = StyleSheet.create({
 	grid: {
 		width: 50,
 		height: 50,
-		backgroundColor: '#cccccc',
+		backgroundColor: 'transparent',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	gridImage: {
+		width: '100%',
+		height: '100%',
+	},
 });
+
+const Tab = createBottomTabNavigator();
+
+export function HomeScreen() {
+	return (
+		<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+			<Text>Home!</Text>
+		</View>
+	);
+}
+
+export default function App() {
+	return (
+		<NavigationContainer>
+			<Tab.Navigator>
+				<Tab.Screen name="Map" component={Map}/>
+				<Tab.Screen name="Home" component={HomeScreen}/>
+			</Tab.Navigator>
+		</NavigationContainer>
+	);
+}
